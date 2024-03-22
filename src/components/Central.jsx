@@ -1,28 +1,35 @@
-import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Card, Badge } from "react-bootstrap";
+import React, { useState, useEffect } from "react"; // Importa React insieme a useState e useEffect
+import { Container, Row, Col, Card, Badge } from "react-bootstrap"; // Importa componenti da react-bootstrap
 
+// Definizione del componente Central
 const Central = (props) => {
-  const [weatherData, setWeatherData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isCloudy, setIsCloudy] = useState(false);
-  const [isRainy, setIsRainy] = useState(false);
-  const [isSunny, setIsSunny] = useState(false);
+  // Stati del componente
+  const [weatherData, setWeatherData] = useState(null); // Stato per i dati meteorologici
+  const [loading, setLoading] = useState(true); // Stato per il caricamento
+  const [isCloudy, setIsCloudy] = useState(false); // Stato per nuvoloso
+  const [isRainy, setIsRainy] = useState(false); // Stato per piovoso
+  const [isSunny, setIsSunny] = useState(false); // Stato per soleggiato
 
+  // Effetto che si attiva all'avvio del componente e ogni 60 secondi
   useEffect(() => {
+    // Funzione per recuperare i dati meteorologici
     const fetchWeatherData = () => {
       fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${props.city}&appid=10ce33ccf310ad1616cfecc580676068`
       )
         .then((response) => {
           if (!response.ok) {
+            // Se la risposta non è ok, solleva un errore
             throw new Error("Network response was not ok");
           }
-          return response.json();
+          return response.json(); // Parsa la risposta in JSON
         })
         .then((data) => {
-          setWeatherData(data);
-          setLoading(false);
-          const weatherDescription = data.weather[0].description.toLowerCase();
+          // Dopo aver ricevuto i dati
+          setWeatherData(data); // Imposta i dati meteorologici
+          setLoading(false); // Imposta il caricamento su false
+          const weatherDescription = data.weather[0].description.toLowerCase(); // Descrizione del meteo in minuscolo
+          // Determina il tipo di condizioni meteorologiche
           if (
             weatherDescription.includes("clouds") ||
             weatherDescription.includes("mist") ||
@@ -45,28 +52,31 @@ const Central = (props) => {
           }
         })
         .catch((error) => {
+          // Gestione degli errori
           console.error("Error fetching weather data:", error);
         });
     };
 
-    fetchWeatherData();
+    fetchWeatherData(); // Richiama la funzione per recuperare i dati meteorologici
 
-    const intervalId = setInterval(fetchWeatherData, 60 * 1000);
+    const intervalId = setInterval(fetchWeatherData, 60 * 1000); // Imposta l'intervallo per aggiornare i dati ogni 60 secondi
 
-    return () => clearInterval(intervalId);
-  }, [props.city]);
+    return () => clearInterval(intervalId); // Pulisce l'intervallo prima che il componente venga dismesso
+  }, [props.city]); // Dipendenza dell'effetto: cambia solo quando props.city cambia
 
+  // Se il caricamento è in corso, mostra un messaggio di caricamento
   if (loading) {
     return <div>Loading...</div>;
   }
 
+  // Se il caricamento è completato, mostra le informazioni meteorologiche
   return (
-    <Container className=" align-items-center d-flex justify-content-center vh-100 ">
+    <Container className=" align-items-center d-flex justify-content-center vh-100 mt-5">
       <Card
         style={{
           backgroundColor: "rgba(0, 0, 0, 0.3)",
-          borderRadius: "8rem",
-          padding: "3rem",
+          borderRadius: "9rem",
+          padding: "1.5rem 3rem",
         }}
       >
         <Card.Body className="text-white">
@@ -74,19 +84,19 @@ const Central = (props) => {
             Meteo in {weatherData.name}
           </Card.Title>
           <Row className="text-center">
-            <Col xs="12" className="mt-5 mb-5">
+            <Col xs={12} className="mt-5 mb-5">
               <p className="mb-1 fs-5">TEMPERATURA</p>
               <h2 style={{ fontSize: "7rem" }}>
                 {Math.round(weatherData.main.temp - 273.15)}°C
               </h2>
             </Col>
-            <Col xs="12" className="mb-5">
+            <Col xs={12} className="mb-5">
               <p className="mb-1 fs-5">CONDIZIONI</p>
               {isCloudy && <h2 style={{ fontSize: "3rem" }}>Nuvoloso</h2>}
               {isRainy && <h2 style={{ fontSize: "3rem" }}>Piovoso</h2>}
               {isSunny && <h2 style={{ fontSize: "3rem" }}>Soleggiato</h2>}
             </Col>
-            <Col xs="12" className="mb-5 ">
+            <Col xs={12} className="mb-5 ">
               <p className="mb-1 fs-5">DESCRIZIONE</p>
               <h2 style={{ fontSize: "3rem" }}>
                 {weatherData.weather[0].description}
@@ -94,28 +104,28 @@ const Central = (props) => {
             </Col>
           </Row>
           <Row className="justify-content-center">
-            <Col xs="12" md="auto text-center mb-3">
+            <Col xs={12} md={4}>
               <Badge
                 variant="info"
-                className="fs-3"
+                className="fs-4"
                 style={{ borderRadius: "10rem", padding: "1rem 2rem" }}
               >
                 Humidity: {weatherData.main.humidity}%
               </Badge>
             </Col>
-            <Col xs="12" md="auto text-center mb-3">
+            <Col xs={12} md={4}>
               <Badge
                 variant="secondary"
-                className="fs-3"
+                className="fs-4"
                 style={{ borderRadius: "10rem", padding: "1rem 2rem" }}
               >
                 Min Temp: {Math.round(weatherData.main.temp_min - 273.15)}°C
               </Badge>
             </Col>
-            <Col xs="12" md="auto text-center">
+            <Col xs={12} md={4}>
               <Badge
                 variant="secondary"
-                className="fs-3"
+                className="fs-4"
                 style={{ borderRadius: "10rem", padding: "1rem 2rem" }}
               >
                 Max Temp: {Math.round(weatherData.main.temp_max - 273.15)}°C
@@ -128,4 +138,4 @@ const Central = (props) => {
   );
 };
 
-export default Central;
+export default Central; // Esporta il componente Central come default
