@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import NavBar from "./components/NavBar.jsx";
+import Central from "./components/Central.jsx";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
+  const [city, setCity] = useState("Foggia"); // Stato per memorizzare il valore della città
+
+  // Funzione per gestire la ricerca della città
+  const handleSearch = (searchCity) => {
+    setCity(searchCity);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container className="App">
+      <Row>
+        <Col xs={12}>
+          <NavBar onSearch={handleSearch} />{" "}
+          {/* Passa la funzione di ricerca alla NavBar */}
+        </Col>
+        <Col xs={12}>
+          <Central city={city} />{" "}
+          {/* Passa il valore della città al componente Central */}
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
