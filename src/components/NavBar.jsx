@@ -18,12 +18,12 @@ const NavBar = ({ onSearch }) => {
       <Container fluid>
         {/* Brand della Navbar */}
         <Navbar.Brand href="#home" className="text-white fs-1 font-weight-bold">
-          METEO
+          IL METEO
         </Navbar.Brand>
         {/* Sezione di navigazione */}
         <Nav>
           {/* Form per la ricerca */}
-          <Form inline onSubmit={handleSearch} className="d-flex">
+          <Form inline="true" onSubmit={handleSearch} className="d-flex">
             {/* Campo di input per la città */}
             <FormControl
               type="text"

@@ -14,21 +14,34 @@ const Central = (props) => {
   useEffect(() => {
     // Funzione per recuperare i dati meteorologici
     const fetchWeatherData = () => {
+      setIsCloudy(false);
+      setIsRainy(false);
+      setIsSunny(false);
+
+      if (!props.city || props.city === "") {
+        alert("Inserisci una città valida prima di effettuare la ricerca.");
+        return; // Interrompi la funzione se il campo di ricerca non è valido
+      }
+
       fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${props.city}&appid=10ce33ccf310ad1616cfecc580676068`
       )
         .then((response) => {
           if (!response.ok) {
             // Se la risposta non è ok, solleva un errore
+
             throw new Error("Network response was not ok");
           }
-          return response.json(); // Parsa la risposta in JSON
+          return response.json(); // Passa la risposta in JSON
         })
         .then((data) => {
+          console.log(data);
+
           // Dopo aver ricevuto i dati
           setWeatherData(data); // Imposta i dati meteorologici
           setLoading(false); // Imposta il caricamento su false
           const weatherDescription = data.weather[0].description.toLowerCase(); // Descrizione del meteo in minuscolo
+          console.log(weatherDescription);
           // Determina il tipo di condizioni meteorologiche
           if (
             weatherDescription.includes("clouds") ||
@@ -44,7 +57,7 @@ const Central = (props) => {
           ) {
             setIsRainy(true);
           } else if (
-            weatherDescription.includes("clear") ||
+            weatherDescription.includes("clear sky") ||
             weatherDescription.includes("sun") ||
             weatherDescription.includes("sunny")
           ) {
@@ -92,9 +105,15 @@ const Central = (props) => {
             </Col>
             <Col xs={12} className="mb-5">
               <p className="mb-1 fs-5">CONDIZIONI</p>
-              {isCloudy && <h2 style={{ fontSize: "3rem" }}>Nuvoloso</h2>}
-              {isRainy && <h2 style={{ fontSize: "3rem" }}>Piovoso</h2>}
-              {isSunny && <h2 style={{ fontSize: "3rem" }}>Soleggiato</h2>}
+              {isCloudy ? (
+                <h2 style={{ fontSize: "3rem" }}>Nuvoloso</h2>
+              ) : isRainy ? (
+                <h2 style={{ fontSize: "3rem" }}>Piovoso</h2>
+              ) : isSunny ? (
+                <h2 style={{ fontSize: "3rem" }}>Soleggiato</h2>
+              ) : (
+                ""
+              )}
             </Col>
             <Col xs={12} className="mb-5 ">
               <p className="mb-1 fs-5">DESCRIZIONE</p>
